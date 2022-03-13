@@ -2,7 +2,7 @@
   "name": "shelters-for-ua",
   "version": "0.1.0",
   "private": true,
-  "homepage": "http://humanitarian-help.war.in.ua",
+  "homepage": "http://shelters.war.in.ua",
   "type": "module",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
