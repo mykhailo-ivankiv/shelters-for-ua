@@ -4,16 +4,13 @@ import { useEffect, useRef, useMemo } from 'react'
 import mapboxgl from 'mapbox-gl'
 import { useAsync } from 'react-use'
 import GeoJSON from 'geojson'
+import 'mapbox-gl/dist/mapbox-gl.css'
 
 import cluster from './icons/cluster.png'
 import family from './icons/family.png'
 import familyChild from './icons/family-child.png'
 import familyPet from './icons/family-pet.png'
 import familyPetChild from './icons/family-pet-child.png'
-import person from './icons/person.png'
-import personChild from './icons/person-child.png'
-import personPet from './icons/person-pet.png'
-import personPetChild from './icons/person-pet-child.png'
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN
 
@@ -34,8 +31,8 @@ const Shelters = ({ geoJSON }) => {
     const map = new mapboxgl.Map({
       container: elRef.current,
       style: 'mapbox://styles/mapbox/streets-v9',
-      center: [-103.5917, 40.6699],
-      zoom: 3,
+      center: [26.17, 44.38],
+      zoom: 4,
     })
 
     map.on('load', async () => {
