@@ -59,3 +59,15 @@
 .Shelters__nav dl {
   font-family: 'PT Sans', serif;
 }
+
+
+.Shelters__popup { }
+.Shelters__list {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  grid-gap: 0.5em;
+}
+.Shelters__list-title {}
+.Shelters__list-definition {}
+
+

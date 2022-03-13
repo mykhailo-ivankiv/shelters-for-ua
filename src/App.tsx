@@ -12,7 +12,7 @@ const App = () => {
       <section className={b()}>
         <Routes>
           <Route path="/">
-            <Route path="/:storageId" element={<Shelters />} />
+            <Route path="/:shelterId" element={<Shelters />} />
             <Route path="" element={<Shelters />} />
           </Route>
         </Routes>

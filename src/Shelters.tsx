@@ -5,12 +5,17 @@ import mapboxgl from 'mapbox-gl'
 import { useAsync } from 'react-use'
 import GeoJSON from 'geojson'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import './Shelters.css'
+import BEM from './helpers/BEM'
 
 import cluster from './icons/cluster.png'
 import family from './icons/family.png'
 import familyChild from './icons/family-child.png'
 import familyPet from './icons/family-pet.png'
 import familyPetChild from './icons/family-pet-child.png'
+import { useParams, useNavigate } from 'react-router-dom'
+
+const b = BEM('Shelters')
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_TOKEN
 
@@ -26,14 +31,20 @@ const loadImage = (url, name, map) =>
     })
   })
 
-const Shelters = ({ geoJSON }) => {
+const Shelters = ({ geoJSON, onSelect, selectedShelter }) => {
+  const elRef = useRef(null)
+  const mapRef = useRef(null)
+  const popup = useMemo(() => new mapboxgl.Popup({}).on('close', () => onSelect(null)), [])
+
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: elRef.current,
       style: 'mapbox://styles/mapbox/streets-v9',
-      center: [26.17, 44.38],
+      center: selectedShelter ? [selectedShelter.longitude, selectedShelter.latitude] : [26.17, 44.38],
       zoom: 4,
     })
+
+    mapRef.current = map
 
     map.on('load', async () => {
       map.addSource('earthquakes', { type: 'geojson', data: geoJSON, cluster: true })
@@ -112,21 +123,7 @@ const Shelters = ({ geoJSON }) => {
       // the location of the feature, with
       // description HTML from its properties.
       map.on('click', 'unclustered-point', (e) => {
-        const coordinates = e.features[0].geometry.coordinates.slice()
-        const mag = e.features[0].properties.mag
-        const tsunami = e.features[0].properties.tsunami === 1 ? 'yes' : 'no'
-
-        // Ensure that if the map is zoomed out such that
-        // multiple copies of the feature are visible, the
-        // popup appears over the copy being pointed to.
-        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360
-        }
-
-        new mapboxgl.Popup()
-          .setLngLat(coordinates)
-          .setHTML(`magnitude: ${mag}<br>Was there a tsunami?: ${tsunami}`)
-          .addTo(map)
+        onSelect(e.features[0].properties.id)
       })
 
       map.on('mouseenter', 'clusters', () => {
@@ -137,11 +134,69 @@ const Shelters = ({ geoJSON }) => {
       })
     })
   }, [])
-  const elRef = useRef(null)
-  return <div ref={elRef} style={{ position: 'absolute', top: 0, bottom: 0, width: '100vw', height: '100vh' }} />
+
+  useEffect(() => {
+    if (!selectedShelter || !mapRef.current) return
+
+    popup
+      .setOffset({
+        top: [3, 18],
+        'top-left': [3, 18],
+        'top-right': [3, 18],
+        bottom: [3, -18],
+        'bottom-left': [3, -18],
+        'bottom-right': [3, -18],
+        right: [-15, 0],
+        left: [
+          // prettier-ignore
+          (selectedShelter.petsFriendly && selectedShelter.kidsFriendly) ? 75
+            : (selectedShelter.petsFriendly || selectedShelter.kidsFriendly) ? 65
+              : 50,
+          0,
+        ],
+      })
+      .setLngLat([selectedShelter.longitude, selectedShelter.latitude])
+      .setHTML(
+        `
+          <section class="${b('popup')}">
+            <h3>${selectedShelter.city}, ${selectedShelter.country}</h3>
+            <dl class="${b('list')}">
+              <dt>👨‍👩‍👧 can host:</dt>
+              <dd>${selectedShelter.hawManyPeopleCanHost}</dd>
+              
+              <dt>🐶 pets:</dt>
+              <dd>${selectedShelter.petsFriendly ? 'Yes' : 'No'}</dd>
+              
+              <dt>👶 kids:</dt>
+              <dd>${selectedShelter.kidsFriendly ? 'Yes' : 'No'}</dd>
+            </dl>
+            
+            <dl>              
+              <dt>✉️ email:</dt>
+              <dd style="margin-left: 5ch;">${selectedShelter.email}</dd>
+            </dl>
+            <p>${selectedShelter.details}</p>
+          </section>
+        `,
+      )
+      .addTo(mapRef.current)
+
+    // return () => popup.close()
+  }, [selectedShelter])
+
+  return (
+    <div
+      ref={elRef}
+      className={b()}
+      style={{ position: 'absolute', top: 0, bottom: 0, width: '100vw', height: '100vh' }}
+    />
+  )
 }
 
 const Comp = () => {
+  const navigate = useNavigate()
+  const { shelterId } = useParams()
+
   const { value: shelters = [], loading } = useAsync(async () => {
     const docs = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/shelters`)
     return await docs.json()
@@ -151,6 +206,29 @@ const Comp = () => {
     return GeoJSON.parse(shelters, { Point: ['latitude', 'longitude'] })
   }, [shelters])
 
-  return loading ? <>Loading...</> : <Shelters geoJSON={sheltersGeoJSON} />
+  const selectedShelter = useMemo(() => {
+    return shelters.find((s) => s.id === shelterId)
+  }, [shelters, shelterId])
+
+  return loading ? (
+    <div
+      style={{
+        fontFamily: 'PT Sans',
+        fontSize: '1.5em',
+        position: 'absolute',
+        left: '50%',
+        top: '50%',
+        transform: 'translate(-50,-50)',
+      }}
+    >
+      Loading...
+    </div>
+  ) : (
+    <Shelters
+      onSelect={(id: string | null) => (id ? navigate(`/${id}`) : navigate('/'))}
+      selectedShelter={selectedShelter}
+      geoJSON={sheltersGeoJSON}
+    />
+  )
 }
 export default Comp
