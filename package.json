@@ -2,7 +2,7 @@
   "name": "shelters-for-ua",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://neformal13.github.io/shelters-for-ua",
+  "homepage": "shelters.war.in.ua",
   "type": "module",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
