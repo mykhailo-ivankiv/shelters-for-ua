@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/shelters-for-ua/static/css/main.d048c926.css",
-    "main.js": "/shelters-for-ua/static/js/main.b33528ad.js",
-    "static/js/787.e7e3cccb.chunk.js": "/shelters-for-ua/static/js/787.e7e3cccb.chunk.js",
-    "static/media/family-pet-child.png": "/shelters-for-ua/static/media/family-pet-child.b52920e46702d740b179.png",
-    "static/media/family-child.png": "/shelters-for-ua/static/media/family-child.1d6dded24c6c2d823af5.png",
-    "static/media/family-pet.png": "/shelters-for-ua/static/media/family-pet.f955ed8ca2ac63a8faa2.png",
-    "static/media/cluster.png": "/shelters-for-ua/static/media/cluster.30d2f14ac281450328af.png",
-    "static/media/family.png": "/shelters-for-ua/static/media/family.dfe9acabd021a72f4994.png",
-    "index.html": "/shelters-for-ua/index.html",
-    "main.d048c926.css.map": "/shelters-for-ua/static/css/main.d048c926.css.map",
-    "main.b33528ad.js.map": "/shelters-for-ua/static/js/main.b33528ad.js.map",
-    "787.e7e3cccb.chunk.js.map": "/shelters-for-ua/static/js/787.e7e3cccb.chunk.js.map"
+    "main.css": "/shelters.war.in.ua/static/css/main.d048c926.css",
+    "main.js": "/shelters.war.in.ua/static/js/main.5a957ac1.js",
+    "static/js/787.e7e3cccb.chunk.js": "/shelters.war.in.ua/static/js/787.e7e3cccb.chunk.js",
+    "static/media/family-pet-child.png": "/shelters.war.in.ua/static/media/family-pet-child.b52920e46702d740b179.png",
+    "static/media/family-child.png": "/shelters.war.in.ua/static/media/family-child.1d6dded24c6c2d823af5.png",
+    "static/media/family-pet.png": "/shelters.war.in.ua/static/media/family-pet.f955ed8ca2ac63a8faa2.png",
+    "static/media/cluster.png": "/shelters.war.in.ua/static/media/cluster.30d2f14ac281450328af.png",
+    "static/media/family.png": "/shelters.war.in.ua/static/media/family.dfe9acabd021a72f4994.png",
+    "index.html": "/shelters.war.in.ua/index.html",
+    "main.d048c926.css.map": "/shelters.war.in.ua/static/css/main.d048c926.css.map",
+    "main.5a957ac1.js.map": "/shelters.war.in.ua/static/js/main.5a957ac1.js.map",
+    "787.e7e3cccb.chunk.js.map": "/shelters.war.in.ua/static/js/787.e7e3cccb.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d048c926.css",
-    "static/js/main.b33528ad.js"
+    "static/js/main.5a957ac1.js"
   ]
 }
