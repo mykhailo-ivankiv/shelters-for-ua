@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/shelters-for-ua/static/css/main.d048c926.css",
-    "main.js": "/shelters-for-ua/static/js/main.99a77095.js",
+    "main.js": "/shelters-for-ua/static/js/main.b33528ad.js",
     "static/js/787.e7e3cccb.chunk.js": "/shelters-for-ua/static/js/787.e7e3cccb.chunk.js",
     "static/media/family-pet-child.png": "/shelters-for-ua/static/media/family-pet-child.b52920e46702d740b179.png",
     "static/media/family-child.png": "/shelters-for-ua/static/media/family-child.1d6dded24c6c2d823af5.png",
@@ -10,11 +10,11 @@
     "static/media/family.png": "/shelters-for-ua/static/media/family.dfe9acabd021a72f4994.png",
     "index.html": "/shelters-for-ua/index.html",
     "main.d048c926.css.map": "/shelters-for-ua/static/css/main.d048c926.css.map",
-    "main.99a77095.js.map": "/shelters-for-ua/static/js/main.99a77095.js.map",
+    "main.b33528ad.js.map": "/shelters-for-ua/static/js/main.b33528ad.js.map",
     "787.e7e3cccb.chunk.js.map": "/shelters-for-ua/static/js/787.e7e3cccb.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d048c926.css",
-    "static/js/main.99a77095.js"
+    "static/js/main.b33528ad.js"
   ]
 }
