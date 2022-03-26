@@ -34,10 +34,13 @@ const loadImage = (url, name, map) =>
 const Shelters = ({ geoJSON, onSelect, selectedShelter }) => {
   const elRef = useRef(null)
   const mapRef = useRef(null)
-  const popup = useMemo(() => new mapboxgl.Popup({
-    className: b('popup'),
-
-  }).on('close', () => onSelect(null)), [])
+  const popup = useMemo(
+    () =>
+      new mapboxgl.Popup({
+        className: b('popup'),
+      }).on('close', () => onSelect(null)),
+    [],
+  )
 
   useEffect(() => {
     const map = new mapboxgl.Map({
@@ -223,7 +226,7 @@ const Comp = () => {
         position: 'absolute',
         left: '50%',
         top: '50%',
-        transform: 'translate(-50,-50)',
+        transform: 'translate(-50%,-50%)',
       }}
     >
       Loading...
