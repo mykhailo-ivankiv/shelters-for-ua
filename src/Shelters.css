@@ -60,14 +60,21 @@
   font-family: 'PT Sans', serif;
 }
 
+.mapboxgl-popup-content {
+  width: 300px;
+}
 
-.Shelters__popup { }
+.Shelters__popup {}
 .Shelters__list {
   display: grid;
   grid-template-columns: 80px 1fr;
   grid-gap: 0.5em;
 }
-.Shelters__list-title {}
-.Shelters__list-definition {}
+.Shelters__list-title {
+}
+.Shelters__list-definition {
+}
 
-
+.Shelters__paragraph {
+  margin: 1em 0;
+}

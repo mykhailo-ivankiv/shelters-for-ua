@@ -34,7 +34,10 @@ const loadImage = (url, name, map) =>
 const Shelters = ({ geoJSON, onSelect, selectedShelter }) => {
   const elRef = useRef(null)
   const mapRef = useRef(null)
-  const popup = useMemo(() => new mapboxgl.Popup({}).on('close', () => onSelect(null)), [])
+  const popup = useMemo(() => new mapboxgl.Popup({
+    className: b('popup'),
+
+  }).on('close', () => onSelect(null)), [])
 
   useEffect(() => {
     const map = new mapboxgl.Map({
@@ -175,9 +178,9 @@ const Shelters = ({ geoJSON, onSelect, selectedShelter }) => {
               <dt>✉️ email:</dt>
               <dd style="margin-left: 5ch;">${selectedShelter.email}</dd>
             </dl>
-            ${selectedShelter.helpWidth ? `<p>${selectedShelter.message}</p>` : ''}
-            ${selectedShelter.helpWidth ? `<p>${selectedShelter.helpWidth}</p>` : ''}
-            ${selectedShelter.personDetails ? `<p>${selectedShelter.personDetails}</p>` : ''}
+            ${selectedShelter.helpWidth ? `<p class="${b('paragraph')}">${selectedShelter.message}</p>` : ''}
+            ${selectedShelter.helpWidth ? `<p  class="${b('paragraph')}">${selectedShelter.helpWidth}</p>` : ''}
+            ${selectedShelter.personDetails ? `<p  class="${b('paragraph')}">${selectedShelter.personDetails}</p>` : ''}
           </section>
         `,
       )
