@@ -40,9 +40,7 @@ const Shelters = ({ geoJSON, onSelect, selectedShelter }) => {
     const map = new mapboxgl.Map({
       container: elRef.current,
       style: 'mapbox://styles/mapbox/streets-v9',
-      center: selectedShelter
-        ? [selectedShelter.longitude, selectedShelter.latitude]
-        : [26.17, 44.38],
+      center: selectedShelter ? [selectedShelter.longitude, selectedShelter.latitude] : [26.17, 44.38],
       zoom: selectedShelter ? 10 : 4,
     })
 
@@ -177,7 +175,9 @@ const Shelters = ({ geoJSON, onSelect, selectedShelter }) => {
               <dt>✉️ email:</dt>
               <dd style="margin-left: 5ch;">${selectedShelter.email}</dd>
             </dl>
-            <p>${selectedShelter.details}</p>
+            ${selectedShelter.helpWidth ? `<p>${selectedShelter.message}</p>` : ''}
+            ${selectedShelter.helpWidth ? `<p>${selectedShelter.helpWidth}</p>` : ''}
+            ${selectedShelter.personDetails ? `<p>${selectedShelter.personDetails}</p>` : ''}
           </section>
         `,
       )
