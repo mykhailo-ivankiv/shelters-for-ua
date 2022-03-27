@@ -25,7 +25,7 @@ const Shelters = ({ geoJSON, selectedShelter, onSelect }) => {
       <NavigationControl />
       <GeolocateControl />
 
-      <SheltersLayers  geoJSON={geoJSON} onSelect={onSelect} />
+      <SheltersLayers geoJSON={geoJSON} onSelect={onSelect} />
 
       {selectedShelter && (
         <Popup
@@ -114,12 +114,13 @@ const Comp = () => {
         }}
       >
         <label style={{ display: 'block' }}>
-          <input type="checkbox" checked={onlyPetFriendly} onChange={toggleOnlyPetFriendly} /> <span>Pet friendly</span>
+          <input type="checkbox" checked={onlyPetFriendly} onChange={toggleOnlyPetFriendly} />{' '}
+          <span>🐶 Pet friendly</span>
         </label>
 
         <label style={{ display: 'block' }}>
           <input type="checkbox" checked={onlyKidsFriendly} onChange={toggleOnlyKidsFriendly} />{' '}
-          <span>Kids friendly</span>
+          <span>👶 Kids friendly</span>
         </label>
       </div>
     </>
