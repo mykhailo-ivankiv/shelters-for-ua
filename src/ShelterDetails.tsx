@@ -43,7 +43,7 @@ const ShelterDetails = ({ shelterId }) => {
         <dd>{shelter.hawManyPeopleCanHost}</dd>
 
         <dt>🐶 pets:</dt>
-        <dd>{shelter.petsFriendly ? 'Yes' : 'No'}</dd>
+        <dd>{shelter.petFriendly ? 'Yes' : 'No'}</dd>
 
         <dt>👶 kids:</dt>
         <dd>{shelter.kidsFriendly ? 'Yes' : 'No'}</dd>

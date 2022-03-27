@@ -39,8 +39,8 @@ const Shelters = ({ geoJSON, selectedShelter, onSelect }) => {
             right: [-15, 0],
             left: [
               // prettier-ignore
-              (selectedShelter.petsFriendly && selectedShelter.kidsFriendly) ? 75
-                : (selectedShelter.petsFriendly || selectedShelter.kidsFriendly) ? 65
+              (selectedShelter.petFriendly && selectedShelter.kidsFriendly) ? 75
+                : (selectedShelter.petFriendly || selectedShelter.kidsFriendly) ? 65
                   : 50,
               0,
             ],
