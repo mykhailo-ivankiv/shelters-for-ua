@@ -99,9 +99,9 @@ const SheltersLayers = ({ geoJSON, onSelect }) => {
           // prettier-ignore
           'icon-image': [
             "case",
-            ["all", ["==", ["get", "kidsFriendly"], true], ["==", ["get", "petsFriendly"], true]], "family-pet-child",
+            ["all", ["==", ["get", "kidsFriendly"], true], ["==", ["get", "petFriendly"], true]], "family-pet-child",
             ["==", ["get", "kidsFriendly"], true], 'family-child',
-            ["==", ["get", "petsFriendly"], true], 'family-pet',
+            ["==", ["get", "petFriendly"], true], 'family-pet',
             "family"
           ],
           'icon-anchor': 'left',
