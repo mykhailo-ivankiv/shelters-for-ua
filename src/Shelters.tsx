@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Map, { FullscreenControl, GeolocateControl, NavigationControl, Popup } from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import { useAsync } from 'react-use'
+import { useAsync, useToggle } from 'react-use'
 import { useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import GeoJSON from 'geojson'
@@ -25,7 +25,7 @@ const Shelters = ({ geoJSON, selectedShelter, onSelect }) => {
       <NavigationControl />
       <GeolocateControl />
 
-      <SheltersLayers geoJSON={geoJSON} onSelect={onSelect} />
+      <SheltersLayers  geoJSON={geoJSON} onSelect={onSelect} />
 
       {selectedShelter && (
         <Popup
@@ -60,15 +60,24 @@ const Comp = () => {
   const navigate = useNavigate()
   const { shelterId } = useParams()
 
+  const [onlyPetFriendly, toggleOnlyPetFriendly] = useToggle(false)
+  const [onlyKidsFriendly, toggleOnlyKidsFriendly] = useToggle(false)
+
   const { value: shelters = [], loading } = useAsync(async () => {
     const docs = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/shelters-partial`)
     return await docs.json()
   }, [])
 
+  const filteredShelters = useMemo(() => {
+    return shelters
+      .filter((shelter) => (onlyPetFriendly === false ? true : shelter.petFriendly))
+      .filter((shelter) => (onlyKidsFriendly === false ? true : shelter.kidsFriendly))
+  }, [shelters, onlyPetFriendly, onlyKidsFriendly])
+
   const sheltersGeoJSON = useMemo(() => {
     // @ts-ignore
-    return GeoJSON.parse(shelters, { Point: ['latitude', 'longitude'] })
-  }, [shelters])
+    return GeoJSON.parse(filteredShelters, { Point: ['latitude', 'longitude'] })
+  }, [filteredShelters])
 
   const selectedShelter = useMemo(() => {
     return shelters.find((s) => s.id === shelterId)
@@ -88,11 +97,32 @@ const Comp = () => {
       Loading...
     </div>
   ) : (
-    <Shelters
-      onSelect={(id: string | null) => (id ? navigate(`/${id}`) : navigate('/'))}
-      selectedShelter={selectedShelter}
-      geoJSON={sheltersGeoJSON}
-    />
+    <>
+      <Shelters
+        onSelect={(id: string | null) => (id ? navigate(`/${id}`) : navigate('/'))}
+        selectedShelter={selectedShelter}
+        geoJSON={sheltersGeoJSON}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          zIndex: 3,
+          background: 'white',
+          top: '1em',
+          left: '1em',
+          padding: '1em',
+        }}
+      >
+        <label style={{ display: 'block' }}>
+          <input type="checkbox" checked={onlyPetFriendly} onChange={toggleOnlyPetFriendly} /> <span>Pet friendly</span>
+        </label>
+
+        <label style={{ display: 'block' }}>
+          <input type="checkbox" checked={onlyKidsFriendly} onChange={toggleOnlyKidsFriendly} />{' '}
+          <span>Kids friendly</span>
+        </label>
+      </div>
+    </>
   )
 }
 
