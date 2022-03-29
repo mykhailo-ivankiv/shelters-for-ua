@@ -20,6 +20,7 @@ const Shelters = ({ geoJSON, selectedShelter, onSelect }) => {
       }}
       style={{ width: '100vw', height: '100vh' }}
       mapStyle="mapbox://styles/mapbox/streets-v9"
+      scrollZoom={false}
     >
       <FullscreenControl />
       <NavigationControl />
