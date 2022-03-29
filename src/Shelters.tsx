@@ -18,6 +18,7 @@ const Shelters = ({ geoJSON, selectedShelter, onSelect }) => {
         latitude: selectedShelter ? selectedShelter.latitude : 44.38,
         zoom: selectedShelter ? 10 : 4,
       }}
+      cooperativeGestures={true}
       style={{ width: '100vw', height: '100vh' }}
       mapStyle="mapbox://styles/mapbox/streets-v9"
     >
