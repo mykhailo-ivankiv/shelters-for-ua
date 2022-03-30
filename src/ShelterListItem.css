@@ -1,0 +1,22 @@
+.ShelterListItem {
+  padding: 1em;
+  display: block;
+}
+
+.ShelterListItem:hover {
+  background-color: rgba(52, 152, 219, 0.2);
+}
+
+.ShelterListItem_isSelected {
+  background-color: rgba(52, 152, 219, 0.5);
+}
+
+.ShelterListItem__title {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.ShelterListItem__flags {
+  float: right;
+  margin-left: 1ch;
+}

@@ -1,0 +1,23 @@
+.Layout {
+  display: grid;
+  grid-template-columns: 40ch auto;
+  height: 100vh;
+  width: 100vw;
+}
+
+.Layout__sidebar {
+  overflow: auto;
+}
+
+.Layout__main {
+  overflow: auto;
+}
+
+.Layout__loader {
+  font-family: PT Sans, sans-serif;
+  font-size: 1.5em;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}

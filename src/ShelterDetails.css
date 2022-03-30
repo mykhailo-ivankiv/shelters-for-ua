@@ -1,0 +1,51 @@
+@media screen and (max-width: 600px) {
+  .Shelters__nav {
+    font-size: 14px;
+  }
+}
+
+.Shelters__nav h1 {
+  font-weight: 700;
+}
+.Shelters__nav dl {
+  margin-bottom: 0;
+}
+.Shelters__nav dd {
+  margin-bottom: 0.3em;
+}
+
+.Shelters__nav {
+  background: white;
+  padding: 1em;
+  position: fixed;
+  top: 1rem;
+  left: 0.5rem;
+
+  font-family: PT Serif, sans-serif;
+  font-size: 1rem;
+  z-index: 2;
+}
+
+.Shelters__nav dl {
+  font-family: 'PT Sans', serif;
+}
+
+.mapboxgl-popup-content {
+  width: 300px;
+}
+
+.Shelters__popup {
+}
+.Shelters__list {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  grid-gap: 0.5em;
+}
+.Shelters__list-title {
+}
+.Shelters__list-definition {
+}
+
+.Shelters__paragraph {
+  margin: 1em 0;
+}

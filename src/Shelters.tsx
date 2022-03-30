@@ -2,15 +2,28 @@ import * as React from 'react'
 import Map, { FullscreenControl, GeolocateControl, NavigationControl, Popup } from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { useAsync, useToggle } from 'react-use'
-import { useMemo } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useMemo, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { booleanPointInPolygon, polygon } from '@turf/turf'
+
 import GeoJSON from 'geojson'
 import SheltersLayers from './SheltersLayers'
 import ShelterDetails from './ShelterDetails'
 
-const Shelters = ({ geoJSON, selectedShelter, onSelect }) => {
+import './Shelters.css'
+import BEM from './helpers/BEM'
+import Filter from './Filter'
+import ShelterListItem from './ShelterListItem'
+import Layout from './Layout'
+const b = BEM('Shelters')
+
+const Shelters = ({ geoJSON, selectedShelter, onSelect, onBoundsChange }) => {
   return (
     <Map
+      onMoveEnd={({ target: map }) => onBoundsChange(map.getBounds())}
+      onLoad={(e) => {
+        onBoundsChange(e.target.getBounds())
+      }}
       mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
       reuseMaps={true}
       initialViewState={{
@@ -18,7 +31,7 @@ const Shelters = ({ geoJSON, selectedShelter, onSelect }) => {
         latitude: selectedShelter ? selectedShelter.latitude : 44.38,
         zoom: selectedShelter ? 10 : 4,
       }}
-      style={{ width: '100vw', height: '100vh' }}
+      style={{ width: '100%', height: '100%' }}
       mapStyle="mapbox://styles/mapbox/streets-v9"
     >
       <FullscreenControl />
@@ -49,7 +62,7 @@ const Shelters = ({ geoJSON, selectedShelter, onSelect }) => {
           latitude={selectedShelter.latitude}
           onClose={() => onSelect(null)}
         >
-          <ShelterDetails shelterId={selectedShelter.id} />
+          <ShelterDetails key={selectedShelter.id} shelterId={selectedShelter.id} />
         </Popup>
       )}
     </Map>
@@ -60,19 +73,54 @@ const Comp = () => {
   const navigate = useNavigate()
   const { shelterId } = useParams()
 
-  const [onlyPetFriendly, toggleOnlyPetFriendly] = useToggle(false)
-  const [onlyKidsFriendly, toggleOnlyKidsFriendly] = useToggle(false)
+  const [filters, setFilters] = useState({
+    onlyPetFriendly: false,
+    onlyKidsFriendly: false,
+    numberOfPeople: '',
+  })
+
+  const [bounds, setBounds] = useState<any>(null)
 
   const { value: shelters = [], loading } = useAsync(async () => {
     const docs = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/shelters-partial`)
     return await docs.json()
   }, [])
 
-  const filteredShelters = useMemo(() => {
-    return shelters
-      .filter((shelter) => (onlyPetFriendly === false ? true : shelter.petFriendly))
-      .filter((shelter) => (onlyKidsFriendly === false ? true : shelter.kidsFriendly))
-  }, [shelters, onlyPetFriendly, onlyKidsFriendly])
+  const filteredShelters = useMemo(
+    () =>
+      shelters
+        .filter((shelter) => (filters.onlyPetFriendly === false ? true : shelter.petFriendly))
+        .filter((shelter) => (filters.onlyKidsFriendly === false ? true : shelter.kidsFriendly))
+        .filter((shelter) =>
+          !filters.numberOfPeople ? true : Number(shelter.hawManyPeopleCanHost) >= Number(filters.numberOfPeople),
+        ),
+    [shelters, filters],
+  )
+
+  const sheltersForView = useMemo(() => {
+    if (!bounds) return []
+
+    const boundsGeometry = polygon([
+      [
+        [bounds.getNorthWest().lng, bounds.getNorthWest().lat],
+        [bounds.getNorthEast().lng, bounds.getNorthEast().lat],
+        [bounds.getSouthEast().lng, bounds.getSouthEast().lat],
+        [bounds.getSouthWest().lng, bounds.getSouthWest().lat],
+        [bounds.getNorthWest().lng, bounds.getNorthWest().lat],
+      ],
+    ])
+
+    const result = []
+
+    for (const shelter of filteredShelters) {
+      if (booleanPointInPolygon([shelter.longitude, shelter.latitude], boundsGeometry)) {
+        result.push(shelter)
+        if (result.length === 20) return result
+      }
+    }
+
+    return result
+  }, [filteredShelters, bounds])
 
   const sheltersGeoJSON = useMemo(() => {
     // @ts-ignore
@@ -83,47 +131,32 @@ const Comp = () => {
     return shelters.find((s) => s.id === shelterId)
   }, [shelters, shelterId])
 
-  return loading ? (
-    <div
-      style={{
-        fontFamily: 'PT Sans',
-        fontSize: '1.5em',
-        position: 'absolute',
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%,-50%)',
-      }}
-    >
-      Loading...
-    </div>
-  ) : (
-    <>
-      <Shelters
-        onSelect={(id: string | null) => (id ? navigate(`/${id}`) : navigate('/'))}
-        selectedShelter={selectedShelter}
-        geoJSON={sheltersGeoJSON}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          zIndex: 3,
-          background: 'white',
-          top: '1em',
-          left: '1em',
-          padding: '1em',
-        }}
-      >
-        <label style={{ display: 'block' }}>
-          <input type="checkbox" checked={onlyPetFriendly} onChange={toggleOnlyPetFriendly} />{' '}
-          <span>🐶 Pet friendly</span>
-        </label>
+  // @ts-ignore
+  return (
+    <Layout
+      isLoading={loading}
+      sidebar={
+        <>
+          <Filter filters={filters} onFiltersChange={setFilters} />
 
-        <label style={{ display: 'block' }}>
-          <input type="checkbox" checked={onlyKidsFriendly} onChange={toggleOnlyKidsFriendly} />{' '}
-          <span>👶 Kids friendly</span>
-        </label>
-      </div>
-    </>
+          <div style={{ marginTop: '1.5em' }}>
+            {sheltersForView.map((shelter) => (
+              <ShelterListItem shelter={shelter} isSelected={shelter.id === selectedShelter?.id} />
+            ))}
+          </div>
+        </>
+      }
+      main={
+        <>
+          <Shelters
+            onSelect={(id: string | null) => (id ? navigate(`/${id}`) : navigate('/'))}
+            selectedShelter={selectedShelter}
+            geoJSON={sheltersGeoJSON}
+            onBoundsChange={setBounds}
+          />
+        </>
+      }
+    />
   )
 }
 
