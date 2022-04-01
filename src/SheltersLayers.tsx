@@ -80,14 +80,14 @@ const SheltersLayers = ({ geoJSON, onSelect }) => {
         layout={{
           'icon-image': 'cluster',
           'icon-anchor': 'left',
-          'icon-offset': [-35, 8],
+          'icon-offset': [-37, 5],
           'icon-size': 0.5,
 
           // 'text-anchor': 'right',
           'text-justify': 'left',
           'text-field': '{point_count_abbreviated}',
           'text-size': 12,
-          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-font': ['Roboto Bold'],
         }}
       />
       <Layer
@@ -105,12 +105,12 @@ const SheltersLayers = ({ geoJSON, onSelect }) => {
             "family"
           ],
           'icon-anchor': 'left',
-          'icon-offset': [-25, 8],
+          'icon-offset': [-25, 4],
           'icon-size': 0.5,
 
           'text-anchor': 'left',
           'text-field': '{hawManyPeopleCanHost}',
-          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-font': ['Roboto Bold'],
           'text-size': 12,
         }}
       />

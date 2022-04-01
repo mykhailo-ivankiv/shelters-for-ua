@@ -16,7 +16,13 @@
   color: #2c3e50;
 }
 
+.ShelterListItem__description {
+  color: black;
+  font-size: 0.8em;
+}
+
 .ShelterListItem__flags {
   float: right;
   margin-left: 1ch;
+  font-size: 0.8em;
 }

@@ -16,7 +16,7 @@ const ShelterListItem = ({ shelter, isSelected }) => (
     </span>
     <br />
 
-    <span style={{ maxWidth: '15em', color: 'black' }}>👨‍👩‍👧 {shelter.hawManyPeopleCanHost}</span>
+    <span className={b('description')}>👨‍👩‍👧 {shelter.hawManyPeopleCanHost}</span>
   </Link>
 )
 

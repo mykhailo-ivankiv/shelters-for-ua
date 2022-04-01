@@ -1,75 +1,15 @@
-import * as React from 'react'
-import Map, { FullscreenControl, GeolocateControl, NavigationControl, Popup } from 'react-map-gl'
-import 'mapbox-gl/dist/mapbox-gl.css'
-import { useAsync, useToggle } from 'react-use'
-import { useMemo, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { booleanPointInPolygon, polygon } from '@turf/turf'
-
+import { useNavigate, useParams } from 'react-router-dom'
+import { useState, useMemo } from 'react'
+import { useAsync } from 'react-use'
+import { polygon, booleanPointInPolygon } from '@turf/turf'
 import GeoJSON from 'geojson'
-import SheltersLayers from './SheltersLayers'
-import ShelterDetails from './ShelterDetails'
-
-import './Shelters.css'
-import BEM from './helpers/BEM'
+import Layout from './Layout'
 import Filter from './Filter'
 import ShelterListItem from './ShelterListItem'
-import Layout from './Layout'
-const b = BEM('Shelters')
+import * as React from 'react'
+import SheltersMap from './SheltersMap'
 
-const Shelters = ({ geoJSON, selectedShelter, onSelect, onBoundsChange }) => {
-  return (
-    <Map
-      onMoveEnd={({ target: map }) => onBoundsChange(map.getBounds())}
-      onLoad={(e) => {
-        onBoundsChange(e.target.getBounds())
-      }}
-      mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
-      reuseMaps={true}
-      initialViewState={{
-        longitude: selectedShelter ? selectedShelter.longitude : 26.17,
-        latitude: selectedShelter ? selectedShelter.latitude : 44.38,
-        zoom: selectedShelter ? 10 : 4,
-      }}
-      style={{ width: '100%', height: '100%' }}
-      mapStyle="mapbox://styles/mapbox/streets-v9"
-    >
-      <FullscreenControl />
-      <NavigationControl />
-      <GeolocateControl />
-
-      <SheltersLayers geoJSON={geoJSON} onSelect={onSelect} />
-
-      {selectedShelter && (
-        <Popup
-          offset={{
-            top: [3, 18],
-            'top-left': [3, 18],
-            'top-right': [3, 18],
-            bottom: [3, -18],
-            'bottom-left': [3, -18],
-            'bottom-right': [3, -18],
-            right: [-15, 0],
-            left: [
-              // prettier-ignore
-              (selectedShelter.petFriendly && selectedShelter.kidsFriendly) ? 75
-                : (selectedShelter.petFriendly || selectedShelter.kidsFriendly) ? 65
-                  : 50,
-              0,
-            ],
-          }}
-          longitude={selectedShelter.longitude}
-          latitude={selectedShelter.latitude}
-          onClose={() => onSelect(null)}
-        >
-          <ShelterDetails key={selectedShelter.id} shelterId={selectedShelter.id} />
-        </Popup>
-      )}
-    </Map>
-  )
-}
-
-const Comp = () => {
+const Shelters = () => {
   const navigate = useNavigate()
   const { shelterId } = useParams()
 
@@ -140,6 +80,10 @@ const Comp = () => {
           <Filter filters={filters} onFiltersChange={setFilters} />
 
           <div style={{ marginTop: '1.5em' }}>
+            <label style={{ padding: '1em' }}>
+              <input type="checkbox" /> sync with map
+            </label>
+
             {sheltersForView.map((shelter) => (
               <ShelterListItem shelter={shelter} isSelected={shelter.id === selectedShelter?.id} />
             ))}
@@ -147,17 +91,15 @@ const Comp = () => {
         </>
       }
       main={
-        <>
-          <Shelters
-            onSelect={(id: string | null) => (id ? navigate(`/${id}`) : navigate('/'))}
-            selectedShelter={selectedShelter}
-            geoJSON={sheltersGeoJSON}
-            onBoundsChange={setBounds}
-          />
-        </>
+        <SheltersMap
+          onSelect={(id: string | null) => (id ? navigate(`/${id}`) : navigate('/'))}
+          selectedShelter={selectedShelter}
+          geoJSON={sheltersGeoJSON}
+          onBoundsChange={setBounds}
+        />
       }
     />
   )
 }
 
-export default Comp
+export default Shelters
