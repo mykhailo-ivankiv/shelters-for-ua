@@ -11,9 +11,9 @@ type Props = {
 }
 
 const Filter: React.FC<Props> = ({ filters, onFiltersChange }) => (
-  <div style={{ padding: '1em' }}>
+  <div style={{ padding: '1em', borderBottom: '1px solid silver' }}>
     <label style={{ display: 'block' }}>
-      Number of people{' '}
+      👨‍👩‍👧 Number of people{' '}
       <input
         placeholder="Empty for all"
         style={{ width: '15ch' }}

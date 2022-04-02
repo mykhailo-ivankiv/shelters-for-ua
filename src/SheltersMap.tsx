@@ -3,32 +3,24 @@ import Map, { FullscreenControl, GeolocateControl, NavigationControl, Popup, Mar
 import 'mapbox-gl/dist/mapbox-gl.css'
 import SheltersLayers from './SheltersLayers'
 import ShelterDetails from './ShelterDetails'
-import cluster from './icons/cluster.png'
+
 import family from './icons/family.png'
 import familyChild from './icons/family-child.png'
 import familyPet from './icons/family-pet.png'
 import familyPetChild from './icons/family-pet-child.png'
 import './SheltersMap.css'
 import BEM from './helpers/BEM'
-import { useAsync } from 'react-use'
-import { useCallback } from 'react'
+import useShelterInfo from './hooks/useShelterInfo'
+import { useContext } from 'react'
+import { LayoutContext } from './Layout'
 
 const b = BEM('SheltersMap')
 
 export const mapId = 'sheltersMap'
 
 const SheltersMap = ({ geoJSON, selectedShelter, onSelect, onBoundsChange }) => {
-  const selectedShelterInfo = useAsync<any>(async () => {
-    if (!selectedShelter) return null
-
-    const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/shelters/${selectedShelter.id}`)
-
-    if (response.status === 200) {
-      return response.json()
-    } else {
-      throw new Error('Error fetching shelter')
-    }
-  }, [selectedShelter])
+  const selectedShelterInfo = useShelterInfo(selectedShelter?.id)
+  const layout = useContext(LayoutContext)
 
   return (
     <Map
@@ -57,7 +49,7 @@ const SheltersMap = ({ geoJSON, selectedShelter, onSelect, onBoundsChange }) => 
       {selectedShelter && (
         <>
           <Marker longitude={selectedShelter.longitude} latitude={selectedShelter.latitude} anchor="bottom">
-            <span className={b('marker', { loading: selectedShelterInfo.loading })}>
+            <span className={b('marker', { loading: selectedShelterInfo.isLoading })}>
               <span className={b('marker-text')}>{selectedShelter.hawManyPeopleCanHost}</span>
               <img
                 className={b('marker-img')}
@@ -72,7 +64,7 @@ const SheltersMap = ({ geoJSON, selectedShelter, onSelect, onBoundsChange }) => 
             </span>
           </Marker>
 
-          {!selectedShelterInfo.loading && selectedShelterInfo.value && (
+          {layout === 'sidebar-closed' && !selectedShelterInfo.isLoading && selectedShelterInfo.data && (
             <Popup
               className={b('popup')}
               closeButton={false}
@@ -102,12 +94,12 @@ const SheltersMap = ({ geoJSON, selectedShelter, onSelect, onBoundsChange }) => 
                 ✕
               </button>
 
-              {selectedShelterInfo.error ? (
+              {selectedShelterInfo.isError ? (
                 <div className={b('error')}>
                   <span>{selectedShelterInfo.error?.message}</span>
                 </div>
               ) : (
-                <ShelterDetails shelter={selectedShelterInfo.value} />
+                <ShelterDetails shelterId={selectedShelter.id} />
               )}
             </Popup>
           )}

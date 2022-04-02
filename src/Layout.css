@@ -1,43 +1,51 @@
 .Layout {
   position: relative;
   display: grid;
-  grid-template-columns: 33ch auto;
+  grid-template-columns: 40ch auto;
+  grid-template-rows: 1fr;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
 }
 
-@media screen and (max-width: 400px) {
-  .Layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: 50% auto;
-  }
-}
-
 .Layout_closeSidebar {
   grid-template-columns: 0 auto;
+  grid-template-rows: 1fr;
 }
 
-.Layout__toggle-button-text {
-  font-size: 2em;
+.Layout__toggle-button {
+  position: absolute;
+  z-index: 2;
+  background: white;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  bottom: unset;
+  left: 40ch;
+  top: 5em;
+  height: 50px;
+  width: 20px;
+  border-radius: 0 5px 5px 0;
 }
 
 .Layout_closeSidebar .Layout__toggle-button {
   left: 0;
 }
 
-.Layout__toggle-button {
-  left: 33ch;
-  box-shadow: 3px 2px 6px -3px black;
+.Layout__toggle-button-text {
+  display: block;
+  font-size: 2em;
+  line-height: 0;
   position: absolute;
-  z-index: 2;
-  background: white;
-  border: none;
-  border-radius: 0 10px 9px 0;
-  top: 1.5em;
-  width: 20px;
-  line-height: 20px;
-  cursor: pointer;
+  transform: rotate(225deg);
+  left: 7px;
+}
+
+.Layout_closeSidebar .Layout__toggle-button-text {
+  transform: rotate(400deg);
+  top: 28px;
+  left: 0;
 }
 
 .Layout__sidebar {
@@ -46,15 +54,6 @@
   grid-column-end: 2;
   grid-row-start: auto;
   grid-row-end: auto;
-}
-@media screen and (max-width: 400px) {
-  .Layout__sidebar {
-    overflow: auto;
-    grid-column-start: auto;
-    grid-column-end: auto;
-    grid-row-start: 2;
-    grid-row-end: 3;
-  }
 }
 
 .Layout__main {
@@ -68,4 +67,52 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+}
+
+@media screen and (max-width: 580px) {
+  .Layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 50% auto;
+  }
+
+  .Layout_closeSidebar {
+    grid-template-columns: 1fr;
+    grid-template-rows: 100% 0;
+  }
+
+  .Layout__sidebar {
+    overflow: auto;
+    grid-column-start: auto;
+    grid-column-end: auto;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+
+  .Layout_closeSidebar .Layout__toggle-button-text {
+    transform: rotate(-45deg);
+    top: 14px;
+    left: 20px;
+  }
+
+  .Layout__toggle-button-text {
+    transform: rotate(135deg);
+    top: 7px;
+    left: 17px;
+  }
+
+  .Layout_closeSidebar .Layout__toggle-button {
+    bottom: 0;
+    padding-top: 10px;
+  }
+
+  .Layout__toggle-button {
+    left: 50% !important;
+    bottom: 50%;
+    top: unset;
+    width: 50px;
+
+    border-radius: 5px 5px 0 0;
+    transform: translateX(-50%);
+    height: 20px;
+  }
 }

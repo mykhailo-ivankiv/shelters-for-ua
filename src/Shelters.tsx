@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useState, useMemo } from 'react'
 import { useAsync } from 'react-use'
 import { polygon, booleanPointInPolygon } from '@turf/turf'
@@ -7,9 +7,14 @@ import Layout from './Layout'
 import Filter from './Filter'
 import ShelterListItem from './ShelterListItem'
 import * as React from 'react'
-import SheltersMap from './SheltersMap'
+import SheltersMap, { mapId } from './SheltersMap'
+import ShelterDetails from './ShelterDetails'
+import { useMap } from 'react-map-gl'
 
 const Shelters = () => {
+  const maps = useMap()
+  const map = maps[mapId]
+
   const navigate = useNavigate()
   const { shelterId } = useParams()
 
@@ -67,9 +72,7 @@ const Shelters = () => {
     return GeoJSON.parse(filteredShelters, { Point: ['latitude', 'longitude'] })
   }, [filteredShelters])
 
-  const selectedShelter = useMemo(() => {
-    return shelters.find((s) => s.id === shelterId)
-  }, [shelters, shelterId])
+  const selectedShelter = useMemo(() => shelters.find((s) => s.id === shelterId), [shelters, shelterId])
 
   // @ts-ignore
   return (
@@ -78,15 +81,38 @@ const Shelters = () => {
       sidebar={
         <>
           <Filter filters={filters} onFiltersChange={setFilters} />
-
-          <div style={{ marginTop: '1.5em' }}>
-            <label style={{ padding: '1em' }}>
-              <input type="checkbox" /> sync with map
-            </label>
-
-            {sheltersForView.map((shelter) => (
-              <ShelterListItem shelter={shelter} isSelected={shelter.id === selectedShelter?.id} />
-            ))}
+          <div>
+            {selectedShelter ? (
+              <div style={{ padding: '0.5em 1em' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    padding: '3px 0',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Link to="/">&lt; back to list</Link>
+                  <button
+                    onClick={() => {
+                      map.flyTo({
+                        center: [selectedShelter.longitude, selectedShelter.latitude],
+                        speed: 0.5,
+                      })
+                    }}
+                  >
+                    center ⌖
+                  </button>
+                </div>
+                <ShelterDetails shelterId={selectedShelter.id} />
+              </div>
+            ) : (
+              <>
+                {sheltersForView.map((shelter) => (
+                  <ShelterListItem key={shelter.id} shelter={shelter} isSelected={shelter.id === selectedShelter?.id} />
+                ))}
+              </>
+            )}
           </div>
         </>
       }

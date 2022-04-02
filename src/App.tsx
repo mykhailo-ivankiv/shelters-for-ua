@@ -1,26 +1,30 @@
 import { Routes, Route, HashRouter } from 'react-router-dom'
 import './App.css'
-import BEM from './helpers/BEM'
 import 'antd/dist/antd.css'
 import Shelters from './Shelters'
 import { MapProvider } from 'react-map-gl'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
-const b = BEM('App')
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000,
+    },
+  },
+})
 
 const App = () => {
   return (
-    <HashRouter>
-      <section className={b()}>
+    <QueryClientProvider client={queryClient}>
+      <HashRouter>
         <MapProvider>
           <Routes>
-            <Route path="/">
-              <Route path="/:shelterId" element={<Shelters />} />
-              <Route path="" element={<Shelters />} />
-            </Route>
+            <Route path="/:shelterId" element={<Shelters />} />
+            <Route path="" element={<Shelters />} />
           </Routes>
         </MapProvider>
-      </section>
-    </HashRouter>
+      </HashRouter>
+    </QueryClientProvider>
   )
 }
 
