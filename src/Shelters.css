@@ -1,0 +1,21 @@
+.Shelters {
+}
+
+.Shelters__pagination {
+  overflow: hidden;
+  padding: 0.5em;
+}
+
+.Shelters__next-button {
+  float: right;
+}
+.Shelters__next-button:disabled {
+  opacity: 0.5;
+}
+
+.Shelters__prev-button {
+  float: left;
+}
+.Shelters__prev-button:disabled {
+  opacity: 0.5;
+}

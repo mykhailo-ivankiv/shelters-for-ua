@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import { polygon, booleanPointInPolygon } from '@turf/turf'
 import GeoJSON from 'geojson'
 import Layout from './Layout'
@@ -12,6 +12,9 @@ import { useMap } from 'react-map-gl'
 import useShelters from './hooks/useShelters'
 import SelectedInfoMarker from './SelectedInfoMarker'
 import ShelterMarker from './ShelterMarker'
+import BEM from './helpers/BEM'
+import './Shelters.css'
+const b = BEM('Shelters')
 
 const Shelters = () => {
   const maps = useMap()
@@ -31,21 +34,30 @@ const Shelters = () => {
     numberOfPeople: '',
   })
 
+  const [page, setPage] = useState(0)
   const [bounds, setBounds] = useState<any>(null)
+  const searchIndexesRef = useRef([])
 
-  const filteredShelters = useMemo(
-    () =>
-      shelters
-        .filter((shelter) => (filters.onlyPetFriendly === false ? true : shelter.petFriendly))
-        .filter((shelter) => (filters.onlyKidsFriendly === false ? true : shelter.kidsFriendly))
-        .filter((shelter) =>
-          !filters.numberOfPeople ? true : Number(shelter.hawManyPeopleCanHost) >= Number(filters.numberOfPeople),
-        ),
-    [shelters, filters],
-  )
+  const filteredShelters = useMemo(() => {
+    searchIndexesRef.current = []
+    return shelters
+      .filter((shelter) => (filters.onlyPetFriendly === false ? true : shelter.petFriendly))
+      .filter((shelter) => (filters.onlyKidsFriendly === false ? true : shelter.kidsFriendly))
+      .filter((shelter) =>
+        !filters.numberOfPeople ? true : Number(shelter.hawManyPeopleCanHost) >= Number(filters.numberOfPeople),
+      )
+  }, [shelters, filters])
+
+  useEffect(() => {
+    searchIndexesRef.current = []
+    setPage(0)
+  }, [bounds, filters, shelters])
 
   const sheltersForView = useMemo(() => {
     if (!bounds) return []
+
+    const searchIndexes = searchIndexesRef.current
+    if (searchIndexes[page]) return searchIndexes[page].data
 
     const boundsGeometry = polygon([
       [
@@ -59,15 +71,30 @@ const Shelters = () => {
 
     const result = []
 
-    for (const shelter of filteredShelters) {
+    let i = searchIndexes[page - 1] ? searchIndexes[page - 1].index : 0
+    for (; i < filteredShelters.length; i++) {
+      const shelter = filteredShelters[i]
+
       if (booleanPointInPolygon([shelter.longitude, shelter.latitude], boundsGeometry)) {
         result.push(shelter)
-        if (result.length === 10) return result
+        if (result.length === 6) {
+          searchIndexes.push({
+            data: result,
+            index: i + 1,
+          })
+
+          return result
+        }
       }
     }
 
+    searchIndexes.push({
+      data: result,
+      index: i,
+    })
+
     return result
-  }, [filteredShelters, bounds])
+  }, [filteredShelters, bounds, page])
 
   const sheltersGeoJSON = useMemo(() => {
     // @ts-ignore
@@ -104,9 +131,27 @@ const Shelters = () => {
               </div>
             ) : (
               <>
+                <h3 style={{ padding: '1em' }}>Found n shelters in this area:</h3>
+
                 {sheltersForView.map((shelter) => (
                   <ShelterListItem key={shelter.id} shelter={shelter} isSelected={shelter.id === selectedShelter?.id} />
                 ))}
+                <div className={b('pagination')}>
+                  <button
+                    disabled={page === 0}
+                    className={b('prev-button')}
+                    onClick={() => setPage((page) => page - 1)}
+                  >
+                    Prev
+                  </button>
+                  <button
+                    disabled={(searchIndexesRef.current[page]?.index ?? 0) >= filteredShelters.length}
+                    className={b('next-button')}
+                    onClick={() => setPage((page) => page + 1)}
+                  >
+                    Next
+                  </button>
+                </div>
               </>
             )}
           </div>
