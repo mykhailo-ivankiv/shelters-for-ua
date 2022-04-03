@@ -9,6 +9,7 @@ export const mapId = 'sheltersMap'
 const SheltersMap = ({ geoJSON, selectedShelter, onSelect, onBoundsChange, children }) => (
   <Map
     id={mapId}
+    cooperativeGestures={true}
     trackResize={true}
     onMoveEnd={({ target: map }) => onBoundsChange(map.getBounds())}
     onLoad={(e) => {
