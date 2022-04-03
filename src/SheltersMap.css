@@ -35,12 +35,24 @@
 }
 
 .SheltersMap__marker {
+  cursor: pointer;
   top: -13px;
   position: absolute;
   left: -12px;
 }
 
 .SheltersMap__marker:before {
+  background: #e73c7e;
+  content: '';
+  position: absolute;
+  width: calc(100% - 2px);
+  height: 30px;
+  left: 1px;
+  border-radius: 32px;
+  top: -4px;
+}
+
+.SheltersMap__marker_primary:before {
   background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
   background-size: auto;
   background-size: 400% 400%;
@@ -48,10 +60,10 @@
   content: '';
   position: absolute;
   width: calc(100% - 2px);
-  height: 29px;
+  height: 30px;
   left: 1px;
   border-radius: 32px;
-  top: -3px;
+  top: -4px;
 }
 
 .SheltersMap__marker_loading:after {

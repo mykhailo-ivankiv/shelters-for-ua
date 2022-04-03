@@ -5,6 +5,7 @@ type Filters = {
   onlyPetFriendly: boolean
   onlyKidsFriendly: boolean
 }
+
 type Props = {
   filters: Filters
   onFiltersChange: (filters: Filters) => void

@@ -1,6 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useState, useMemo } from 'react'
-import { useAsync } from 'react-use'
 import { polygon, booleanPointInPolygon } from '@turf/turf'
 import GeoJSON from 'geojson'
 import Layout from './Layout'
@@ -10,6 +9,9 @@ import * as React from 'react'
 import SheltersMap, { mapId } from './SheltersMap'
 import ShelterDetails from './ShelterDetails'
 import { useMap } from 'react-map-gl'
+import useShelters from './hooks/useShelters'
+import SelectedInfoMarker from './SelectedInfoMarker'
+import ShelterMarker from './ShelterMarker'
 
 const Shelters = () => {
   const maps = useMap()
@@ -17,6 +19,11 @@ const Shelters = () => {
 
   const navigate = useNavigate()
   const { shelterId } = useParams()
+  const { data: shelters = [], isLoading: loading } = useShelters()
+  const selectedShelter = useMemo(
+    () => (shelterId ? shelters.find((s) => s.id === shelterId) : null),
+    [shelters, shelterId],
+  )
 
   const [filters, setFilters] = useState({
     onlyPetFriendly: false,
@@ -25,11 +32,6 @@ const Shelters = () => {
   })
 
   const [bounds, setBounds] = useState<any>(null)
-
-  const { value: shelters = [], loading } = useAsync(async () => {
-    const docs = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/shelters-partial`)
-    return await docs.json()
-  }, [])
 
   const filteredShelters = useMemo(
     () =>
@@ -60,7 +62,7 @@ const Shelters = () => {
     for (const shelter of filteredShelters) {
       if (booleanPointInPolygon([shelter.longitude, shelter.latitude], boundsGeometry)) {
         result.push(shelter)
-        if (result.length === 20) return result
+        if (result.length === 10) return result
       }
     }
 
@@ -72,9 +74,6 @@ const Shelters = () => {
     return GeoJSON.parse(filteredShelters, { Point: ['latitude', 'longitude'] })
   }, [filteredShelters])
 
-  const selectedShelter = useMemo(() => shelters.find((s) => s.id === shelterId), [shelters, shelterId])
-
-  // @ts-ignore
   return (
     <Layout
       isLoading={loading}
@@ -95,10 +94,7 @@ const Shelters = () => {
                   <Link to="/">&lt; back to list</Link>
                   <button
                     onClick={() => {
-                      map.flyTo({
-                        center: [selectedShelter.longitude, selectedShelter.latitude],
-                        speed: 0.5,
-                      })
+                      map.flyTo({ center: [selectedShelter.longitude, selectedShelter.latitude], speed: 0.5 })
                     }}
                   >
                     center ⌖
@@ -116,14 +112,34 @@ const Shelters = () => {
           </div>
         </>
       }
-      main={
+      main={({ isSidebarOpen }) => (
         <SheltersMap
           onSelect={(id: string | null) => (id ? navigate(`/${id}`) : navigate('/'))}
           selectedShelter={selectedShelter}
           geoJSON={sheltersGeoJSON}
           onBoundsChange={setBounds}
-        />
-      }
+        >
+          {isSidebarOpen &&
+            sheltersForView.map((shelter) => (
+              <ShelterMarker
+                onClick={(ev) => {
+                  ev.stopPropagation()
+                  navigate(`/${shelter.id}`)
+                }}
+                primary={false}
+                isLoading={false}
+                key={shelter.id}
+                hawManyPeopleCanHost={shelter.hawManyPeopleCanHost}
+                kidsFriendly={shelter.kidsFriendly}
+                petFriendly={shelter.petFriendly}
+                longitude={shelter.longitude}
+                latitude={shelter.latitude}
+              />
+            ))}
+
+          {selectedShelter && <SelectedInfoMarker />}
+        </SheltersMap>
+      )}
     />
   )
 }

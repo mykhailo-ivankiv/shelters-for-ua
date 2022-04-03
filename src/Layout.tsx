@@ -7,7 +7,7 @@ import './Layout.css'
 import BEM from './helpers/BEM'
 const b = BEM('Layout')
 
-export const LayoutContext = React.createContext<'sidebar-open' | 'sidebar-closed'>('sidebar-open')
+export const LayoutContext = React.createContext<{ isSidebarOpen: boolean }>({ isSidebarOpen: true })
 
 const Layout = ({ sidebar, main, isLoading }) => {
   const maps = useMap()
@@ -20,7 +20,7 @@ const Layout = ({ sidebar, main, isLoading }) => {
   }, [isSidebarOpen])
 
   return (
-    <LayoutContext.Provider value={isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}>
+    <LayoutContext.Provider value={{ isSidebarOpen }}>
       <div className={b({ closeSidebar: !isSidebarOpen })}>
         {isLoading ? (
           <div className={b('loader')}>Loading...</div>
@@ -30,8 +30,8 @@ const Layout = ({ sidebar, main, isLoading }) => {
               <span className={b('toggle-button-text')}>⌝</span>
             </button>
 
-            <div className={b('sidebar')}>{sidebar}</div>
-            <div className={b('main')}>{main}</div>
+            <div className={b('sidebar')}>{typeof sidebar === 'function' ? sidebar({ isSidebarOpen }) : sidebar}</div>
+            <div className={b('main')}>{typeof main === 'function' ? main({ isSidebarOpen }) : main}</div>
           </>
         )}
       </div>
