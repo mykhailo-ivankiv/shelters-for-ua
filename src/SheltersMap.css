@@ -12,12 +12,14 @@
   }
 }
 
+.mapboxgl-popup-content {
+  box-shadow: 0px 0px 40px -20px black;
+}
+
 .SheltersMap {
 }
 
 .SheltersMap__popup {
-  width: 240px;
-  max-width: 240px;
 }
 
 .SheltersMap__close-button {

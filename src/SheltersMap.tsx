@@ -23,7 +23,7 @@ const SheltersMap = ({ geoJSON, selectedShelter, onSelect, onBoundsChange, child
       zoom: selectedShelter ? 10 : 4,
     }}
     style={{ width: '100%', height: '100%' }}
-    mapStyle="mapbox://styles/mapbox/streets-v9"
+    mapStyle="mapbox://styles/mapbox/light-v10"
   >
     <FullscreenControl />
     <NavigationControl />
