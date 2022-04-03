@@ -38,6 +38,7 @@ const ShelterMarker = ({
           : petFriendly ? familyPet
           : family
         }
+        alt={''}
       />
     </span>
   </Marker>

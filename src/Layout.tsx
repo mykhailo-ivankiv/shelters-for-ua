@@ -17,7 +17,7 @@ const Layout = ({ sidebar, main, isLoading }) => {
     const map = maps[mapId]
 
     map?.resize()
-  }, [isSidebarOpen])
+  }, [isSidebarOpen, maps])
 
   return (
     <LayoutContext.Provider value={{ isSidebarOpen }}>
