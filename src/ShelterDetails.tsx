@@ -39,16 +39,16 @@ const ShelterDetails = ({ shelterId }) => {
         <dd>{shelterInfo.kidsFriendly ? 'Yes' : 'No'}</dd>
       </dl>
       <dl>
-        <dt>✉️ email:</dt>
-        <dd style={{ marginLeft: '5ch' }}>
-          <a href={`mailto:${shelterInfo.email}`}>{shelterInfo.email}</a>
-        </dd>
         {shelterInfo.contactDetails && (
           <>
             <dt>📞 contact:</dt>
             <dd style={{ marginLeft: '5ch' }}>{shelterInfo.contactDetails}</dd>
           </>
         )}
+        <dt>✉️ email:</dt>
+        <dd style={{ marginLeft: '5ch' }}>
+          <a href={`mailto:${shelterInfo.email}`}>{shelterInfo.email}</a>
+        </dd>
       </dl>
       {shelterInfo.message && (
         <>

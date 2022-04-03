@@ -131,7 +131,17 @@ const Shelters = () => {
               </div>
             ) : (
               <>
-                <h3 style={{ padding: '1em' }}>Found n shelters in this area:</h3>
+                <h3
+                  style={{
+                    padding: '0.5em 1em',
+                    fontSize: '1em',
+                    margin: 0,
+                    fontVariant: 'small-caps',
+                    color: '#999',
+                  }}
+                >
+                  shelters in this area
+                </h3>
 
                 {sheltersForView.map((shelter) => (
                   <ShelterListItem key={shelter.id} shelter={shelter} isSelected={shelter.id === selectedShelter?.id} />

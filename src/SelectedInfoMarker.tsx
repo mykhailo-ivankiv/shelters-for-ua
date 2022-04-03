@@ -9,6 +9,7 @@ import useShelters from './hooks/useShelters'
 import './SheltersMap.css'
 import BEM from './helpers/BEM'
 import ShelterMarker from './ShelterMarker'
+import ShelterShortDetails from './ShelterShortDetails'
 
 const b = BEM('SheltersMap')
 const SelectedInfoMarker = () => {
@@ -43,7 +44,7 @@ const SelectedInfoMarker = () => {
         petFriendly={selectedShelter.petFriendly}
       />
 
-      {!isSidebarOpen && !selectedShelterInfo.isLoading && selectedShelterInfo.data && (
+      {!selectedShelterInfo.isLoading && selectedShelterInfo.data && (
         <Popup
           className={b('popup')}
           closeButton={false}
@@ -72,13 +73,18 @@ const SelectedInfoMarker = () => {
           <button className={b('close-button')} onClick={() => navigate('/')}>
             ✕
           </button>
-          {selectedShelterInfo.isError ? (
+          {selectedShelterInfo.isError && (
             <div className={b('error')}>
               <span>{selectedShelterInfo.error?.message}</span>
             </div>
-          ) : (
-            <ShelterDetails shelterId={selectedShelter.id} />
           )}
+
+          {!selectedShelterInfo.isError &&
+            (isSidebarOpen ? (
+              <ShelterShortDetails shelterId={selectedShelter.id} />
+            ) : (
+              <ShelterDetails shelterId={selectedShelter.id} />
+            ))}
         </Popup>
       )}
     </>
