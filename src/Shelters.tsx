@@ -38,20 +38,16 @@ const Shelters = () => {
   const [bounds, setBounds] = useState<any>(null)
   const searchIndexesRef = useRef([])
 
-  const filteredShelters = useMemo(() => {
-    searchIndexesRef.current = []
-    return shelters
-      .filter((shelter) => (filters.onlyPetFriendly === false ? true : shelter.petFriendly))
-      .filter((shelter) => (filters.onlyKidsFriendly === false ? true : shelter.kidsFriendly))
-      .filter((shelter) =>
-        !filters.numberOfPeople ? true : Number(shelter.hawManyPeopleCanHost) >= Number(filters.numberOfPeople),
-      )
-  }, [shelters, filters])
-
-  useEffect(() => {
-    searchIndexesRef.current = []
-    setPage(0)
-  }, [bounds, filters, shelters])
+  const filteredShelters = useMemo(
+    () =>
+      shelters
+        .filter((shelter) => (filters.onlyPetFriendly === false ? true : shelter.petFriendly))
+        .filter((shelter) => (filters.onlyKidsFriendly === false ? true : shelter.kidsFriendly))
+        .filter((shelter) =>
+          !filters.numberOfPeople ? true : Number(shelter.hawManyPeopleCanHost) >= Number(filters.numberOfPeople),
+        ),
+    [shelters, filters],
+  )
 
   const sheltersForView = useMemo(() => {
     if (!bounds) return []
@@ -78,20 +74,14 @@ const Shelters = () => {
       if (booleanPointInPolygon([shelter.longitude, shelter.latitude], boundsGeometry)) {
         result.push(shelter)
         if (result.length === 6) {
-          searchIndexes.push({
-            data: result,
-            index: i + 1,
-          })
+          searchIndexes.push({ data: result, index: i + 1 })
 
           return result
         }
       }
     }
 
-    searchIndexes.push({
-      data: result,
-      index: i,
-    })
+    searchIndexes.push({ data: result, index: i })
 
     return result
   }, [filteredShelters, bounds, page])
@@ -106,7 +96,14 @@ const Shelters = () => {
       isLoading={loading}
       sidebar={
         <>
-          <Filter filters={filters} onFiltersChange={setFilters} />
+          <Filter
+            filters={filters}
+            onFiltersChange={(newFilters) => {
+              searchIndexesRef.current = []
+              setPage(0)
+              setFilters(newFilters)
+            }}
+          />
           <div>
             {selectedShelter ? (
               <div style={{ padding: '0.5em 1em' }}>
@@ -172,7 +169,11 @@ const Shelters = () => {
           onSelect={(id: string | null) => (id ? navigate(`/${id}`) : navigate('/'))}
           selectedShelter={selectedShelter}
           geoJSON={sheltersGeoJSON}
-          onBoundsChange={setBounds}
+          onBoundsChange={(bounds) => {
+            searchIndexesRef.current = []
+            setPage(0)
+            setBounds(bounds)
+          }}
         >
           {isSidebarOpen &&
             sheltersForView.map((shelter) => (
