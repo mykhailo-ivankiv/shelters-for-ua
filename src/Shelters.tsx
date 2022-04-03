@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useState, useMemo, useRef, useEffect } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { polygon, booleanPointInPolygon } from '@turf/turf'
 import GeoJSON from 'geojson'
 import Layout from './Layout'
